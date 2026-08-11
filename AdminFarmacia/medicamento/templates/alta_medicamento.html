@@ -35,13 +35,7 @@
                 {% endfor %}
             </select>
 
-            <label for="fecha_dispensa" class="form-label">Fecha de Dispensa (opcional):</label>
-            <input type="date" 
-                   class="form-control" 
-                   id="fecha_dispensa" 
-                   name="fecha_dispensa" 
-                   value="{% if objeto.fecha_dispensa %}{{ objeto.fecha_dispensa|date:'Y-m-d' }}{% endif %}">
-            
+          
             <label for="estado" class="form-label">Estado:</label>
             <select class="form-select" id="estado" name="id_estado" required>
                 <option value="">Seleccione un estado</option>

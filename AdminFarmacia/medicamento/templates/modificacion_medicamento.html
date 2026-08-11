@@ -30,13 +30,13 @@
                 {% endfor %}
             </select>
 
-            <label for="fecha_dispensa" class="form-label">Fecha de Dispensa (opcional):</label>
+            <!--<label for="fecha_dispensa" class="form-label">Fecha de Dispensa (opcional):</label>
             <input type="date" 
                     class="form-control" 
                     id="fecha_dispensa" 
                     name="fecha_dispensa" 
                     value="{% if objeto.fecha_dispensa %}{{ objeto.fecha_dispensa|date:'Y-m-d' }}{% endif %}">
-            <!--<label for="qr" class="form-label">QR:</label>
+            <label for="qr" class="form-label">QR:</label>
             <input type="text" class="form-control" id="qr" name="qr" value="{{ medicamento.qr|default_if_none:'' }}">
             <label for="codigo_barra" class="form-label">Código de Barra:</label>
             <input type="text" class="form-control" id="codigo_barra" name="cod_barra" value="{{ medicamento.cod_barra }}" required>-->
