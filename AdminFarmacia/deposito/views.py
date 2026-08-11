@@ -1,17 +1,11 @@
 from collections import defaultdict
-from tempfile import template
-from urllib import request
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.db.models import Q
+from django.urls import reverse
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
-from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render
-from django.template import loader
-from django.urls import reverse
-from django.shortcuts import render
-from matplotlib.style import context
+
 from .models import *
 
 

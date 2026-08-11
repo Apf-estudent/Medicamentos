@@ -33,19 +33,15 @@ class Medicamento(models.Model):
     # Your current DB table does not have that column; making it optional
     # prevents migrations/ORM from forcing NOT NULL during schema repair.
     id_laboratorio = models.ForeignKey(Laboratorio, on_delete=models.CASCADE, null=True, blank=True   )
-    fecha_vencimiento = models.DateField()
+    fecha_vencimiento = models.DateField(null=True, blank=True)
+    fecha_ingreso = models.DateField(null=True, blank=True)
+    fecha_dispensa = models.DateField(null=True, blank=True)
     lote = models.TextField(max_length=200)
-    fecha_ingreso = models.DateField()
     id_deposito =  models.ForeignKey(
         Deposito,
         on_delete=models.CASCADE,
         related_name="medicamentos"   # 👈 distinto de "descartables"
     )
-    fecha_dispensa = models.DateField(null=True, blank=True)
-    qr = models.ImageField(
-        upload_to="medicamento/qr/", blank=True, null=True, verbose_name="QR"
-    )
-    cod_barra = models.IntegerField()
     id_estado = models.ForeignKey(Estado_medicamento, on_delete=models.CASCADE)
     refrigeracion = models.ForeignKey(
         Refrigeracion, on_delete=models.CASCADE, max_length=20
@@ -57,6 +53,7 @@ class Medicamento(models.Model):
         max_length=20,
     )
     cant_stock = models.IntegerField()
+
 
 class Dispensa(models.Model):
     id_dispensa = models.AutoField(primary_key=True)

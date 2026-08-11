@@ -1,9 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import *
 from deposito.models import Deposito, Hueco, Supervisor
-from medicamento.models import (
-    Medicamento,
-)
+from medicamento.models import Medicamento
 
 from django.conf import settings
 
@@ -105,8 +103,8 @@ def alta_descartable(request):
         fecha_ingreso = request.POST.get("fecha_ingreso")
         deposito_id = request.POST.get("deposito")
         fecha_dispensa = request.POST.get("fecha_dispensa")
-        qr = request.POST.get("qr")
-        cod_barra = request.POST.get("cod_barra")
+        """qr = request.POST.get("qr")
+        cod_barra = request.POST.get("cod_barra")"""
         estado_id = request.POST.get("id_estado")
         refrigeracion = request.POST.get("refrigeracion")
         
@@ -176,9 +174,9 @@ def alta_descartable(request):
             )
 
         # Conversión de numéricos
-        cod_barra_int = (
+        """cod_barra_int = (
             int(cod_barra) if cod_barra and str(cod_barra).strip() != "" else None
-        )
+        )"""
         cantidad_stock_int = (
             int(cantidad_stock)
             if cantidad_stock and str(cantidad_stock).strip() != ""
@@ -193,8 +191,6 @@ def alta_descartable(request):
             fecha_ingreso=fecha_ingreso,
             id_deposito_id=deposito_id_int,
             fecha_dispensa=fecha_dispensa,
-            qr=qr or None,
-            cod_barra=cod_barra_int,
             id_estado_id=estado_id_int,  # CORREGIDO → Estado_descartable
             refrigeracion_id=refrigeracion_id_int,
             id_nivel_de_riesgo_id=nivel_id_int,
@@ -233,8 +229,8 @@ def modificaciones_descartable(request, id_descartable):
         descartable.fecha_ingreso = request.POST.get("fecha_ingreso")
         descartable.id_deposito_id = request.POST.get("deposito")
         descartable.fecha_dispensa = request.POST.get("fecha_dispensa")
-        descartable.qr = request.POST.get("qr") or None
-        descartable.cod_barra = request.POST.get("cod_barra")
+        """descartable.qr = request.POST.get("qr") or None
+        descartable.cod_barra = request.POST.get("cod_barra")"""
         descartable.id_estado_id = request.POST.get("id_estado")
 
         # ✅ ForeignKey: asignar por id (manejar '' recibido del <select>)

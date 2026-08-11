@@ -1,5 +1,5 @@
 from django.db import models
-
+from agente.models import Agente
 
 class Supervisor(models.Model):
     id_supervisor=models.AutoField(primary_key=True)
@@ -11,7 +11,7 @@ class Supervisor(models.Model):
 class Deposito(models.Model):
     id_deposito= models.AutoField(primary_key=True)
     descripcion = models.CharField(max_length=100)
-    id_supervisor = models.ForeignKey(Supervisor, on_delete=models.CASCADE)
+    id_supervisor = models.ForeignKey('agente.Agente', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.descripcion

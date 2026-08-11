@@ -1,7 +1,7 @@
-
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from deposito.models import Deposito, Hueco, Supervisor
+from remito.models import Remito, RemitoMedicamento
 from medicamento.models import (
     Laboratorio,
     Estado_medicamento,
@@ -10,7 +10,6 @@ from medicamento.models import (
     Refrigeracion,
     Dispensa,
 )
-from remito.models import Remito, RemitoMedicamento
 
 from django.conf import settings
 
@@ -167,44 +166,42 @@ def buscar_medicamento(request):
     return render(request, "lista_medicamento.html", {
         "medicamentos": medicamentos
     })
+
 def alta_medicamento(request):
     if request.method == "POST":
         description = request.POST.get("description")
-        laboratorio_id = request.POST.get("laboratorio")  # CORREGIDO
+        laboratorio_id = request.POST.get("laboratorio") or request.POST.get("id_laboratorio")
         fecha_vencimiento = request.POST.get("fecha_vencimiento")
         lote = request.POST.get("lote")
         fecha_ingreso = request.POST.get("fecha_ingreso")
-        deposito_id = request.POST.get("deposito")
-        fecha_dispensa = request.POST.get("fecha_dispensa")
-        qr = request.POST.get("qr")
-        cod_barra = request.POST.get("cod_barra")
-        estado_id = request.POST.get("id_estado")
-        refrigeracion = request.POST.get("refrigeracion")
-        nivel_id = request.POST.get("id_nivel_de_riesgo")
-        cantidad_stock = request.POST.get("cant_stock")
+        
+        deposito_id = request.POST.get("id_deposito") or request.POST.get("deposito")
+        fecha_dispensa = request.POST.get("fecha_dispensa") or None
+        estado_id = request.POST.get("id_estado") or request.POST.get("estado")
+        refrigeracion_id = request.POST.get("refrigeracion") or request.POST.get("refrigeracion_id")
+        nivel_id = request.POST.get("id_nivel_de_riesgo") or request.POST.get("nivel")
+        cantidad_stock = request.POST.get("cant_stock") or request.POST.get("cantidad_stock")
 
-        medicamento = Medicamento(
+        Medicamento.objects.create(
             description=description,
-            id_laboratorio_id=laboratorio_id,  # CORREGIDO
+            id_laboratorio_id=laboratorio_id if laboratorio_id else None,
             fecha_vencimiento=fecha_vencimiento,
             lote=lote,
             fecha_ingreso=fecha_ingreso,
             id_deposito_id=deposito_id,
-            fecha_dispensa=fecha_dispensa or None,
-            qr=qr or None,
-            cod_barra=cod_barra,
+            fecha_dispensa=fecha_dispensa,
             id_estado_id=estado_id,
-            refrigeracion_id=refrigeracion,
+            refrigeracion_id=refrigeracion_id,
             id_nivel_de_riesgo_id=nivel_id,
             cant_stock=cantidad_stock,
         )
-        medicamento.save()
         return redirect("lista_medicamento")
 
+    # Consultamos las tablas para enviar las opciones al formulario
     depositos = Deposito.objects.all()
     estados = Estado_medicamento.objects.all()
     niveles = Nivel_Riesgo.objects.all()
-    laboratorios = Laboratorio.objects.all()  # CORREGIDO
+    laboratorios = Laboratorio.objects.all()
     refrigeracion = Refrigeracion.objects.all()
 
     return render(
@@ -212,13 +209,12 @@ def alta_medicamento(request):
         "alta_medicamento.html",
         {
             "depositos": depositos,
-            "laboratorios": laboratorios,  # CORREGIDO
+            "laboratorios": laboratorios,
             "estados": estados,
             "niveles": niveles,
             "refrigeracion": refrigeracion,
         },
     )
-
 
 def eliminacion_medicamento(request, id_medicamento):
     medicamento = Medicamento.objects.get(id_medicamento=id_medicamento)
@@ -229,21 +225,31 @@ def eliminacion_medicamento(request, id_medicamento):
 
 
 def modificaciones_medicamento(request, id_medicamento):
-    medicamento = Medicamento.objects.get(id_medicamento=id_medicamento)
+    medicamento = get_object_or_404(Medicamento, id_medicamento=id_medicamento)
+    
     if request.method == "POST":
         medicamento.description = request.POST.get("description")
         medicamento.laboratorio_id = request.POST.get("laboratorio")
-        medicamento.fecha_vencimiento = request.POST.get("fecha_vencimiento")
+        
+        # --- MANEJO DE FECHAS ---
+        # Si la fecha viene vacía (""), asignamos None
+        fecha_venc = request.POST.get("fecha_vencimiento")
+        medicamento.fecha_vencimiento = fecha_venc if fecha_venc else None
+
+        fecha_ing = request.POST.get("fecha_ingreso")
+        medicamento.fecha_ingreso = fecha_ing if fecha_ing else None
+
+        fecha_disp = request.POST.get("fecha_dispensa")
+        medicamento.fecha_dispensa = fecha_disp if fecha_disp else None
+        # ------------------------
+
         medicamento.lote = request.POST.get("lote")
-        medicamento.fecha_ingreso = request.POST.get("fecha_ingreso")
         medicamento.id_deposito_id = request.POST.get("deposito")
-        medicamento.fecha_dispensa = request.POST.get("fecha_dispensa")
-        medicamento.qr = request.POST.get("qr") or None
-        medicamento.cod_barra = request.POST.get("cod_barra")
         medicamento.id_estado_id = request.POST.get("id_estado")
         medicamento.refrigeracion_id = request.POST.get("refrigeracion")
         medicamento.id_nivel_de_riesgo_id = request.POST.get("id_nivel_de_riesgo")
         medicamento.cant_stock = request.POST.get("cantidad_stock")
+        
         medicamento.save()
         return redirect("lista_medicamento")
 
